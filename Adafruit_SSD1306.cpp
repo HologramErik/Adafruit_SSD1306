@@ -175,7 +175,9 @@ void Adafruit_SSD1306::begin(uint8_t vccstate, uint8_t i2caddr, bool reset) {
   // set pin directions
   if (sid != -1){
     pinMode(dc, OUTPUT);
+#ifndef ARDUINO_ARCH_KONEKTDASH
     pinMode(cs, OUTPUT);
+#endif
 #ifdef HAVE_PORTREG
     csport      = portOutputRegister(digitalPinToPort(cs));
     cspinmask   = digitalPinToBitMask(cs);
@@ -195,9 +197,7 @@ void Adafruit_SSD1306::begin(uint8_t vccstate, uint8_t i2caddr, bool reset) {
       }
     if (hwSPI){
       SPI.begin();
-#if defined(ARDUINO_ARCH_KONEKTDASH)
-      SPI.beginTransaction(cs, SPISettings(8000000, MSBFIRST, SPI_MODE0));
-#elif defined(SPI_HAS_TRANSACTION)
+#ifdef SPI_HAS_TRANSACTION
       SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
 #else
       SPI.setClockDivider (4);
@@ -308,6 +308,9 @@ void Adafruit_SSD1306::ssd1306_command(uint8_t c) {
     *csport |= cspinmask;
     *dcport &= ~dcpinmask;
     *csport &= ~cspinmask;
+#elif defined(ARDUINO_ARCH_KONEKTDASH)
+    digitalWrite(dc, LOW);
+    SPI.beginTransaction(cs, SPISettings(8000000, MSBFIRST, SPI_MODE0));
 #else
     digitalWrite(cs, HIGH);
     digitalWrite(dc, LOW);
@@ -316,6 +319,8 @@ void Adafruit_SSD1306::ssd1306_command(uint8_t c) {
     fastSPIwrite(c);
 #ifdef HAVE_PORTREG
     *csport |= cspinmask;
+#elif defined(ARDUINO_ARCH_KONEKTDASH)
+    SPI.endTransaction();
 #else
     digitalWrite(cs, HIGH);
 #endif
@@ -444,6 +449,9 @@ void Adafruit_SSD1306::display(void) {
     *csport |= cspinmask;
     *dcport |= dcpinmask;
     *csport &= ~cspinmask;
+#elif defined(ARDUINO_ARCH_KONEKTDASH)
+    digitalWrite(dc, HIGH);
+    SPI.beginTransaction(cs, SPISettings(8000000, MSBFIRST, SPI_MODE0));
 #else
     digitalWrite(cs, HIGH);
     digitalWrite(dc, HIGH);
@@ -455,6 +463,8 @@ void Adafruit_SSD1306::display(void) {
     }
 #ifdef HAVE_PORTREG
     *csport |= cspinmask;
+#elif defined(ARDUINO_ARCH_KONEKTDASH)
+    SPI.endTransaction();
 #else
     digitalWrite(cs, HIGH);
 #endif
