@@ -141,6 +141,7 @@ void Adafruit_SSD1306::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
 }
 
+#ifndef ARDUINO_ARCH_KONEKTDASH
 Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
   cs = CS;
   rst = RST;
@@ -149,6 +150,7 @@ Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RS
   sid = SID;
   hwSPI = false;
 }
+#endif
 
 // constructor for hardware SPI - we indicate DataCommand, ChipSelect, Reset
 Adafruit_SSD1306::Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
@@ -193,7 +195,9 @@ void Adafruit_SSD1306::begin(uint8_t vccstate, uint8_t i2caddr, bool reset) {
       }
     if (hwSPI){
       SPI.begin();
-#ifdef SPI_HAS_TRANSACTION
+#if defined(ARDUINO_ARCH_KONEKTDASH)
+      SPI.beginTransaction(cs, SPISettings(8000000, MSBFIRST, SPI_MODE0));
+#elif defined(SPI_HAS_TRANSACTION)
       SPI.beginTransaction(SPISettings(8000000, MSBFIRST, SPI_MODE0));
 #else
       SPI.setClockDivider (4);

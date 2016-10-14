@@ -35,6 +35,8 @@ All text above, and the splash screen must be included in any redistribution
 #elif defined(ESP8266) || defined(ARDUINO_STM32_FEATHER)
   typedef volatile uint32_t PortReg;
   typedef uint32_t PortMask;
+#elif defined(ARDUINO_ARCH_KONEKTDASH)
+  //hwSPI only
 #else
   typedef volatile uint8_t PortReg;
   typedef uint8_t PortMask;
@@ -139,7 +141,9 @@ All text above, and the splash screen must be included in any redistribution
 
 class Adafruit_SSD1306 : public Adafruit_GFX {
  public:
+#ifndef ARDUINO_ARCH_KONEKTDASH
   Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS);
+#endif
   Adafruit_SSD1306(int8_t DC, int8_t RST, int8_t CS);
   Adafruit_SSD1306(int8_t RST = -1);
 
