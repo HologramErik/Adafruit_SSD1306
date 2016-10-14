@@ -35,8 +35,11 @@ All text above, and the splash screen must be included in any redistribution
 #elif defined(ESP8266) || defined(ARDUINO_STM32_FEATHER)
   typedef volatile uint32_t PortReg;
   typedef uint32_t PortMask;
-#elif defined(ARDUINO_ARCH_KONEKTDASH)
+#elif defined(ARDUINO_DASH) || defined(ARDUINO_DASH_PRO)
   //hwSPI only
+  #ifndef HOLOGRAM_DASH
+  #define HOLOGRAM_DASH
+  #endif
 #else
   typedef volatile uint8_t PortReg;
   typedef uint8_t PortMask;

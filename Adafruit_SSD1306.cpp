@@ -141,7 +141,7 @@ void Adafruit_SSD1306::drawPixel(int16_t x, int16_t y, uint16_t color) {
 
 }
 
-#ifndef ARDUINO_ARCH_KONEKTDASH
+#ifndef HOLOGRAM_DASH
 Adafruit_SSD1306::Adafruit_SSD1306(int8_t SID, int8_t SCLK, int8_t DC, int8_t RST, int8_t CS) : Adafruit_GFX(SSD1306_LCDWIDTH, SSD1306_LCDHEIGHT) {
   cs = CS;
   rst = RST;
@@ -175,7 +175,7 @@ void Adafruit_SSD1306::begin(uint8_t vccstate, uint8_t i2caddr, bool reset) {
   // set pin directions
   if (sid != -1){
     pinMode(dc, OUTPUT);
-#ifndef ARDUINO_ARCH_KONEKTDASH
+#ifndef HOLOGRAM_DASH
     pinMode(cs, OUTPUT);
 #endif
 #ifdef HAVE_PORTREG
@@ -308,7 +308,7 @@ void Adafruit_SSD1306::ssd1306_command(uint8_t c) {
     *csport |= cspinmask;
     *dcport &= ~dcpinmask;
     *csport &= ~cspinmask;
-#elif defined(ARDUINO_ARCH_KONEKTDASH)
+#elif defined(HOLOGRAM_DASH)
     digitalWrite(dc, LOW);
     SPI.beginTransaction(cs, SPISettings(8000000, MSBFIRST, SPI_MODE0));
 #else
@@ -319,7 +319,7 @@ void Adafruit_SSD1306::ssd1306_command(uint8_t c) {
     fastSPIwrite(c);
 #ifdef HAVE_PORTREG
     *csport |= cspinmask;
-#elif defined(ARDUINO_ARCH_KONEKTDASH)
+#elif defined(HOLOGRAM_DASH)
     SPI.endTransaction();
 #else
     digitalWrite(cs, HIGH);
@@ -449,7 +449,7 @@ void Adafruit_SSD1306::display(void) {
     *csport |= cspinmask;
     *dcport |= dcpinmask;
     *csport &= ~cspinmask;
-#elif defined(ARDUINO_ARCH_KONEKTDASH)
+#elif defined(HOLOGRAM_DASH)
     digitalWrite(dc, HIGH);
     SPI.beginTransaction(cs, SPISettings(8000000, MSBFIRST, SPI_MODE0));
 #else
@@ -463,7 +463,7 @@ void Adafruit_SSD1306::display(void) {
     }
 #ifdef HAVE_PORTREG
     *csport |= cspinmask;
-#elif defined(ARDUINO_ARCH_KONEKTDASH)
+#elif defined(HOLOGRAM_DASH)
     SPI.endTransaction();
 #else
     digitalWrite(cs, HIGH);
